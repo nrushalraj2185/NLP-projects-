@@ -4,7 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Resume AI - Conversational Assistant</title>
+    <title>Intelligent Career Analyzer (ICA)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="/static/chat.css">
 </head>
 
@@ -13,89 +18,103 @@
         <!-- Header -->
         <header class="header">
             <div class="logo">
-                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                    <rect width="40" height="40" rx="8" fill="url(#gradient)" />
-                    <path d="M12 14h16M12 20h16M12 26h10" stroke="white" stroke-width="2" stroke-linecap="round" />
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                    <rect width="48" height="48" rx="14" fill="url(#logo_grad)" />
+                    <path d="M14 18h20M14 24h20M14 30h12" stroke="white" stroke-width="3" stroke-linecap="round" />
                     <defs>
-                        <linearGradient id="gradient" x1="0" y1="0" x2="40" y2="40">
+                        <linearGradient id="logo_grad" x1="0" y1="0" x2="48" y2="48">
                             <stop offset="0%" stop-color="#6366f1" />
-                            <stop offset="100%" stop-color="#8b5cf6" />
+                            <stop offset="100%" stop-color="#ec4899" />
                         </linearGradient>
                     </defs>
                 </svg>
-                <h1>Smart Resume AI</h1>
+                <h1>Intelligent Career Analyzer</h1>
             </div>
-            <p class="tagline">Conversational Resume Assistant</p>
+            <p class="tagline">Powered by Google Gemini AI</p>
         </header>
 
         <!-- Main Chat Interface -->
         <div class="chat-wrapper">
-            <!-- Upload Section (shown initially) -->
-            <div class="upload-container" id="upload-container">
+            <!-- Dashboard / Selection Screen -->
+            <div class="dashboard-container" id="dashboard-container">
+                <h2 class="dashboard-title">Select Your Mode</h2>
+
+                <div class="mode-grid">
+                    <!-- Mode 1: Career Advisor (No Resume) -->
+                    <div class="mode-card" id="mode-advisor">
+                        <div class="mode-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                        </div>
+                        <h3>Career Advisor</h3>
+                        <p>Discuss career paths, role suggestions, and industry trends without a resume.</p>
+                        <ul class="mode-features">
+                            <li>✅ Role Exploration</li>
+                            <li>✅ Career Planning</li>
+                            <li>✅ General Advice</li>
+                        </ul>
+                        <button class="btn-mode">Start Chat</button>
+                    </div>
+
+                    <!-- Mode 2: Resume Toolkit (With Resume) -->
+                    <div class="mode-card" id="mode-resume">
+                        <div class="mode-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                        </div>
+                        <h3>Resume Toolkit</h3>
+                        <p>Upload a resume to unlock deep analysis tools.</p>
+                        <ul class="mode-features">
+                            <li>✅ Gap Analysis</li>
+                            <li>✅ Resume Rewriter</li>
+                            <li>✅ Skill Extractor</li>
+                        </ul>
+                        <button class="btn-mode">Upload Resume</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upload Section (Hidden Initially) -->
+            <div class="upload-container" id="upload-container" style="display: none;">
+                <button id="back-to-dashboard"
+                    style="position: absolute; top: 1rem; left: 1rem; background: none; border: none; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                    ← Back
+                </button>
                 <div class="upload-card">
+                    <!-- Existing Upload Card Content (Summary) -->
                     <div class="upload-icon">
-                        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="1.5">
                             <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
                             <polyline points="17 8 12 3 7 8" />
                             <line x1="12" y1="3" x2="12" y2="15" />
                         </svg>
                     </div>
-                    <h2>Start Your Interview Prep</h2>
-
-                    <div style="margin: 1.5rem 0;">
-                        <img src="/static/images/raju_interview.jpg" alt="Interview Scene"
-                            style="width: 100%; max-width: 400px; border-radius: 12px; 
-                                    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1);">
-                    </div>
-
-                    <p style="font-size: 1.1rem; color: var(--text-secondary); max-width: 400px; margin: 0 auto 2rem;">
-                        "Excellence chase kar, success jhak maar ke peeche aayegi" <br>
-                        <span style="font-size: 0.9rem; opacity: 0.8;">(Chase excellence, and success will
-                            follow)</span>
+                    <h2>Initialize ICA Toolkit</h2>
+                    <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                        Upload your resume to activate deep analysis modules.
                     </p>
 
                     <div class="file-input-wrapper">
                         <input type="file" id="resume-upload" accept=".pdf,.docx" required>
-                        <label for="resume-upload" class="upload-btn">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
-                                <polyline points="17 8 12 3 7 8" />
-                                <line x1="12" y1="3" x2="12" y2="15" />
-                            </svg>
-                            Choose Resume (PDF or DOCX)
-                        </label>
+                        <label for="resume-upload" class="upload-btn">Choose Resume</label>
                         <div class="file-name" id="file-name"></div>
                     </div>
 
                     <button class="btn-start" id="start-chat-btn" disabled>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
-                        </svg>
-                        Start Analysis
+                        Analyze Resume
                     </button>
-
-                    <div class="features">
-                        <div class="feature">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                                <polyline points="22 4 12 14.01 9 11.01" />
-                            </svg>
-                            <span>Honest Feedback</span>
-                        </div>
-                        <div class="feature">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <circle cx="12" cy="12" r="10" />
-                                <line x1="12" y1="16" x2="12" y2="12" />
-                                <line x1="12" y1="8" x2="12.01" y2="8" />
-                            </svg>
-                            <span>Gap Analysis</span>
-                        </div>
-                    </div>
                 </div>
             </div>
 

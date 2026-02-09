@@ -72,12 +72,13 @@ async def create_chat_session(resume_file: UploadFile = File(...)):
         agent = get_agent()
         
         # Create dedicated session
-        session_id, welcome_msg = agent.create_session(resume_text)
+        session_id, welcome_msg, initial_suggestions = agent.create_session(resume_text)
         conversation_history = agent.get_history(session_id)
         
         return {
             "session_id": session_id,
             "conversation_history": conversation_history,
+            "suggestions": initial_suggestions,
             "message": "Session created successfully"
         }
     except ValueError as ve:
@@ -106,6 +107,26 @@ async def send_chat_message(chat_message: ChatMessage):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing message: {str(e)}")
+
+@app.post("/chatbot/session/general")
+async def create_general_session():
+    """Start a general career advice session without a resume"""
+    try:
+        agent = get_agent()
+        # Pass None as resume_text to trigger General Advisor mode
+        session_id, welcome_msg, initial_suggestions = agent.create_session(resume_text=None)
+        
+        # Initialize empty history
+        conversation_history = agent.get_history(session_id)
+        
+        return {
+            "session_id": session_id,
+            "conversation_history": conversation_history,
+            "suggestions": initial_suggestions,
+            "message": "General session created successfully"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error creating general session: {str(e)}")
 
 @app.get("/chatbot/history/{session_id}")
 async def get_chat_history(session_id: str):
@@ -138,6 +159,32 @@ async def get_session_info(session_id: str):
         "has_resume": True,
         "agent_type": "Google Gemini High-Quality Agent"
     }
+
+# ===== TOOL ENDPOINTS =====
+from services.tools import resume_tools
+
+@app.post("/tools/rewrite")
+async def rewrite_section(text: str = Form(...), keywords: str = Form(...)):
+    """Rewrite a resume section to include keywords"""
+    keyword_list = [k.strip() for k in keywords.split(',')]
+    rewritten = resume_tools.rewrite_section(text, keyword_list)
+    return {"rewritten_text": rewritten}
+
+@app.post("/tools/suggest_roles")
+async def suggest_roles(resume_file: UploadFile = File(...)):
+    """Suggest roles based on resume"""
+    text = await resume_file.read()
+    resume_text = extract_text(text, resume_file.filename)
+    roles = resume_tools.suggest_roles(resume_text)
+    return {"suggested_roles": roles}
+
+@app.post("/tools/analyze_gap")
+async def analyze_gap(resume_file: UploadFile = File(...), job_description: str = Form(...)):
+    """Analyze gaps between resume and job description"""
+    text = await resume_file.read()
+    resume_text = extract_text(text, resume_file.filename)
+    gap_analysis = resume_tools.analyze_gap(resume_text, job_description)
+    return gap_analysis
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

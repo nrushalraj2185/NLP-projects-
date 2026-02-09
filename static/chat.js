@@ -3,6 +3,10 @@ let currentSessionId = null;
 let conversationHistory = [];
 
 // DOM Elements
+const dashboardContainer = document.getElementById('dashboard-container');
+const modeAdvisor = document.getElementById('mode-advisor');
+const modeResume = document.getElementById('mode-resume');
+const backToDashboard = document.getElementById('back-to-dashboard');
 const uploadContainer = document.getElementById('upload-container');
 const chatContainer = document.getElementById('chat-container');
 const loadingOverlay = document.getElementById('loading-overlay');
@@ -14,6 +18,42 @@ const suggestionsContainer = document.getElementById('suggestions-container');
 const messageInput = document.getElementById('message-input');
 const sendBtn = document.getElementById('send-btn');
 const newChatBtn = document.getElementById('new-chat-btn');
+
+// ===== DASHBOARD HANDLING =====
+modeAdvisor.addEventListener('click', async () => {
+    // Start General Chat immediately
+    showLoading(true, "Launching Career Advisor...");
+    try {
+        const response = await fetch('/chatbot/session/general', { method: 'POST' });
+        if (!response.ok) throw new Error('Failed to start general session');
+
+        const data = await response.json();
+        currentSessionId = data.session_id;
+        conversationHistory = data.conversation_history;
+
+        // UI Switch
+        dashboardContainer.style.display = 'none';
+        chatContainer.style.display = 'flex';
+        renderMessages();
+        if (data.suggestions) renderSuggestions(data.suggestions);
+
+    } catch (error) {
+        console.error(error);
+        alert('Could not start Career Advisor');
+    } finally {
+        showLoading(false);
+    }
+});
+
+modeResume.addEventListener('click', () => {
+    dashboardContainer.style.display = 'none';
+    uploadContainer.style.display = 'flex';
+});
+
+backToDashboard.addEventListener('click', () => {
+    uploadContainer.style.display = 'none';
+    dashboardContainer.style.display = 'flex';
+});
 
 // ===== FILE UPLOAD HANDLING =====
 resumeUpload.addEventListener('change', (e) => {
@@ -32,7 +72,7 @@ startChatBtn.addEventListener('click', async () => {
     const file = resumeUpload.files[0];
     if (!file) return;
 
-    showLoading(true);
+    showLoading(true, "Analyzing Resume & Initializing Toolkit...");
 
     try {
         const formData = new FormData();
@@ -58,6 +98,11 @@ startChatBtn.addEventListener('click', async () => {
 
         // Display conversation history
         renderMessages();
+
+        // Render initial suggestions if available
+        if (data.suggestions && data.suggestions.length > 0) {
+            renderSuggestions(data.suggestions);
+        }
 
         // Focus input
         messageInput.focus();
@@ -234,7 +279,10 @@ newChatBtn.addEventListener('click', () => {
         startChatBtn.disabled = true;
 
         chatContainer.style.display = 'none';
-        uploadContainer.style.display = 'flex';
+
+        // Reset to Dashboard
+        uploadContainer.style.display = 'none';
+        dashboardContainer.style.display = 'flex';
     }
 });
 
@@ -253,8 +301,14 @@ messageInput.addEventListener('input', () => {
 });
 
 // ===== UTILITY FUNCTIONS =====
-function showLoading(show) {
+function showLoading(show, message = "Processing...") {
     loadingOverlay.style.display = show ? 'flex' : 'none';
+    if (show) {
+        const textElement = loadingOverlay.querySelector('p');
+        if (textElement) {
+            textElement.textContent = message;
+        }
+    }
 }
 
 function scrollToBottom() {
