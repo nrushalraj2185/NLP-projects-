@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Resume AI - Conversational Assistant</title>
+    <link rel="stylesheet" href="/static/chat.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                    <rect width="40" height="40" rx="8" fill="url(#gradient)" />
+                    <path d="M12 14h16M12 20h16M12 26h10" stroke="white" stroke-width="2" stroke-linecap="round" />
+                    <defs>
+                        <linearGradient id="gradient" x1="0" y1="0" x2="40" y2="40">
+                            <stop offset="0%" stop-color="#6366f1" />
+                            <stop offset="100%" stop-color="#8b5cf6" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <h1>Smart Resume AI</h1>
+            </div>
+            <p class="tagline">Conversational Resume Assistant</p>
+        </header>
+
+        <!-- Main Chat Interface -->
+        <div class="chat-wrapper">
+            <!-- Upload Section (shown initially) -->
+            <div class="upload-container" id="upload-container">
+                <div class="upload-card">
+                    <div class="upload-icon">
+                        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                            <polyline points="17 8 12 3 7 8" />
+                            <line x1="12" y1="3" x2="12" y2="15" />
+                        </svg>
+                    </div>
+                    <h2>Start Your Interview Prep</h2>
+
+                    <div style="margin: 1.5rem 0;">
+                        <img src="/static/images/raju_interview.jpg" alt="Interview Scene"
+                            style="width: 100%; max-width: 400px; border-radius: 12px; 
+                                    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1);">
+                    </div>
+
+                    <p style="font-size: 1.1rem; color: var(--text-secondary); max-width: 400px; margin: 0 auto 2rem;">
+                        "Excellence chase kar, success jhak maar ke peeche aayegi" <br>
+                        <span style="font-size: 0.9rem; opacity: 0.8;">(Chase excellence, and success will
+                            follow)</span>
+                    </p>
+
+                    <div class="file-input-wrapper">
+                        <input type="file" id="resume-upload" accept=".pdf,.docx" required>
+                        <label for="resume-upload" class="upload-btn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                                <polyline points="17 8 12 3 7 8" />
+                                <line x1="12" y1="3" x2="12" y2="15" />
+                            </svg>
+                            Choose Resume (PDF or DOCX)
+                        </label>
+                        <div class="file-name" id="file-name"></div>
+                    </div>
+
+                    <button class="btn-start" id="start-chat-btn" disabled>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+                        </svg>
+                        Start Analysis
+                    </button>
+
+                    <div class="features">
+                        <div class="feature">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                <polyline points="22 4 12 14.01 9 11.01" />
+                            </svg>
+                            <span>Honest Feedback</span>
+                        </div>
+                        <div class="feature">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="12" y1="16" x2="12" y2="12" />
+                                <line x1="12" y1="8" x2="12.01" y2="8" />
+                            </svg>
+                            <span>Gap Analysis</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Container (hidden initially) -->
+            <div class="chat-container" id="chat-container" style="display: none;">
+                <!-- Chat Header -->
+                <div class="chat-header">
+                    <div class="chat-info">
+                        <div class="status-indicator"></div>
+                        <div>
+                            <h3>AI Assistant</h3>
+                            <p class="status-text">Active • Ready to help</p>
+                        </div>
+                    </div>
+                    <button class="btn-new-chat" id="new-chat-btn" title="Start new conversation">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19" />
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                        </svg>
+                        New Chat
+                    </button>
+                </div>
+
+                <!-- Messages Area -->
+                <div class="messages-container" id="messages-container">
+                    <!-- Messages will be added here dynamically -->
+                </div>
+
+                <!-- Suggestions -->
+                <div class="suggestions-container" id="suggestions-container">
+                    <!-- Suggestions will be added here dynamically -->
+                </div>
+
+                <!-- Input Area -->
+                <div class="input-container">
+                    <div class="input-wrapper">
+                        <input type="text" id="message-input" placeholder="Ask me anything about this resume..."
+                            autocomplete="off">
+                        <button class="btn-send" id="send-btn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13" />
+                                <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="input-hint">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 16v-4" />
+                            <path d="M12 8h.01" />
+                        </svg>
+                        Press Enter to send • The AI remembers your conversation
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading Overlay -->
+            <div class="loading-overlay" id="loading-overlay" style="display: none;">
+                <div class="loading-spinner"></div>
+                <p>Processing resume...</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Powered by FastAPI, PyTorch & Hugging Face Transformers</p>
+            <div class="footer-links">
+                <a href="/">← Back to Classic Mode</a>
+            </div>
+        </footer>
+    </div>
+
+    <script src="/static/chat.js"></script>
+</body>
+
+</html>
