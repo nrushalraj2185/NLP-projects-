@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Resume AI - Intelligent Resume Analysis</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                    <rect width="40" height="40" rx="8" fill="url(#gradient)" />
+                    <path d="M12 14h16M12 20h16M12 26h10" stroke="white" stroke-width="2" stroke-linecap="round" />
+                    <defs>
+                        <linearGradient id="gradient" x1="0" y1="0" x2="40" y2="40">
+                            <stop offset="0%" stop-color="#6366f1" />
+                            <stop offset="100%" stop-color="#8b5cf6" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <h1>Smart Resume AI</h1>
+            </div>
+            <p class="tagline">Intelligent Resume Analysis & Matching</p>
+        </header>
+
+        <!-- Tab Navigation -->
+        <div class="tabs">
+            <button class="tab active" data-tab="match">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 11l3 3L22 4" />
+                    <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
+                </svg>
+                Resume Matching
+            </button>
+            <button class="tab" data-tab="qa">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+                Ask Questions
+            </button>
+        </div>
+
+        <!-- Resume Matching Tab -->
+        <div class="tab-content active" id="match-content">
+            <div class="card">
+                <h2>Resume-Job Matching</h2>
+                <p class="description">Upload a resume and job description to get an AI-powered compatibility score</p>
+
+                <form id="match-form">
+                    <!-- Resume Upload -->
+                    <div class="upload-section">
+                        <label class="upload-label">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                                <polyline points="17 8 12 3 7 8" />
+                                <line x1="12" y1="3" x2="12" y2="15" />
+                            </svg>
+                            Upload Resume
+                        </label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="resume-file" accept=".pdf,.docx" required>
+                            <div class="file-display" id="resume-display">
+                                <span class="file-placeholder">Choose PDF or DOCX file</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Job Description -->
+                    <div class="input-section">
+                        <label for="job-description">Job Description</label>
+                        <textarea id="job-description"
+                            placeholder="Paste the job description here... (e.g., We are looking for a Python developer with 3+ years of experience in FastAPI, machine learning, and REST APIs...)"
+                            rows="6" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="match-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                        Analyze Match
+                    </button>
+                </form>
+
+                <!-- Progress Indicator -->
+                <div class="progress-container" id="match-progress" style="display: none;">
+                    <div class="progress-steps">
+                        <div class="step active" id="step-upload">
+                            <div class="step-icon">1</div>
+                            <span>Uploading</span>
+                        </div>
+                        <div class="step" id="step-extract">
+                            <div class="step-icon">2</div>
+                            <span>Extracting Text</span>
+                        </div>
+                        <div class="step" id="step-analyze">
+                            <div class="step-icon">3</div>
+                            <span>AI Analysis</span>
+                        </div>
+                        <div class="step" id="step-complete">
+                            <div class="step-icon">✓</div>
+                            <span>Complete</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="match-progress-fill"></div>
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div class="result-container" id="match-result" style="display: none;">
+                    <div class="result-header">
+                        <h3>Match Score</h3>
+                    </div>
+                    <div class="score-display">
+                        <div class="score-circle">
+                            <svg class="score-ring" width="200" height="200">
+                                <circle cx="100" cy="100" r="90" fill="none" stroke="#e5e7eb" stroke-width="12" />
+                                <circle id="score-progress" cx="100" cy="100" r="90" fill="none"
+                                    stroke="url(#scoreGradient)" stroke-width="12" stroke-linecap="round"
+                                    transform="rotate(-90 100 100)" />
+                                <defs>
+                                    <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#6366f1" />
+                                        <stop offset="100%" stop-color="#8b5cf6" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                            <div class="score-text">
+                                <span class="score-value" id="score-value">0</span>
+                                <span class="score-percent">%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="result-interpretation" id="result-interpretation"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Q&A Tab -->
+        <div class="tab-content" id="qa-content">
+            <div class="card">
+                <h2>Resume Q&A</h2>
+                <p class="description">Upload a resume and ask questions to extract specific information</p>
+
+                <form id="qa-form">
+                    <!-- Resume Upload -->
+                    <div class="upload-section">
+                        <label class="upload-label">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                                <polyline points="17 8 12 3 7 8" />
+                                <line x1="12" y1="3" x2="12" y2="15" />
+                            </svg>
+                            Upload Resume
+                        </label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="qa-resume-file" accept=".pdf,.docx" required>
+                            <div class="file-display" id="qa-resume-display">
+                                <span class="file-placeholder">Choose PDF or DOCX file</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question Input -->
+                    <div class="input-section">
+                        <label for="question">Your Question</label>
+                        <input type="text" id="question"
+                            placeholder="e.g., What is the candidate's email address? What programming languages do they know?"
+                            required>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="qa-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="11" cy="11" r="8" />
+                            <path d="M21 21l-4.35-4.35" />
+                        </svg>
+                        Find Answer
+                    </button>
+                </form>
+
+                <!-- Progress Indicator -->
+                <div class="progress-container" id="qa-progress" style="display: none;">
+                    <div class="progress-steps">
+                        <div class="step active" id="qa-step-upload">
+                            <div class="step-icon">1</div>
+                            <span>Uploading</span>
+                        </div>
+                        <div class="step" id="qa-step-extract">
+                            <div class="step-icon">2</div>
+                            <span>Extracting Text</span>
+                        </div>
+                        <div class="step" id="qa-step-analyze">
+                            <div class="step-icon">3</div>
+                            <span>AI Processing</span>
+                        </div>
+                        <div class="step" id="qa-step-complete">
+                            <div class="step-icon">✓</div>
+                            <span>Complete</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="qa-progress-fill"></div>
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div class="result-container" id="qa-result" style="display: none;">
+                    <div class="result-header">
+                        <h3>Answer</h3>
+                    </div>
+                    <div class="answer-display">
+                        <div class="answer-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+                            </svg>
+                        </div>
+                        <p class="answer-text" id="answer-text"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Powered by FastAPI, PyTorch & Hugging Face Transformers</p>
+            <div style="margin-top: 1rem;">
+                <a href="/static/chat.html"
+                    style="color: #6366f1; text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+                    </svg>
+                    Try the AI Chatbot →
+                </a>
+            </div>
+        </footer>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+
+</html>
